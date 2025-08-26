@@ -42,32 +42,21 @@ const AllEmployeeList = () => {
     });
   };
 
-// Toggle HR/Employee
-const toggleRole = (emp) => {
-  const newRole = emp.role === "hr" ? "employee" : "hr";
-
-  fetch(`http://localhost:5000/users/${emp._id}/toggleRole`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ role: newRole }),
-  })
-    .then((res) => res.json())
-    .then(() => {
-      setEmployees((prev) =>
-        prev.map((e) =>
-          e._id === emp._id ? { ...e, role: newRole } : e
-        )
-      );
-      Swal.fire("Success", `${emp.name} is now ${newRole}`, "success");
+  // Make HR
+  const makeHR = (emp) => {
+    fetch(`http://localhost:5000/users/${emp._id}/makeHR`, {
+      method: "PATCH",
     })
-    .catch((err) => {
-      console.error(err);
-      Swal.fire("Error", "Something went wrong!", "error");
-    });
-};
-
+      .then((res) => res.json())
+      .then(() => {
+        setEmployees((prev) =>
+          prev.map((e) =>
+            e._id === emp._id ? { ...e, role: "hr" } : e
+          )
+        );
+        Swal.fire("Success", `${emp.name} is now HR`, "success");
+      });
+  };
 
   // Adjust Salary
   const saveSalary = (empId) => {
@@ -103,7 +92,7 @@ const toggleRole = (emp) => {
             <th className="p-2">Fire</th>
           </tr>
         </thead>
-        <tbody className="text-center">
+        <tbody className="">
           {employees.map((emp) => (
             <tr key={emp._id} className="border-t">
               <td className="p-2">{emp.name}</td>
@@ -141,11 +130,13 @@ const toggleRole = (emp) => {
                 )}
               </td>
               <td className="p-2">
-                {!emp.fired ? (
-                  <button onClick={() => toggleRole(emp)}>
-                    {emp.role === "hr" ? "Make Employee" : "Make HR"}
-                    </button>
-
+                {emp.role === "employee" && !emp.fired ? (
+                  <button
+                    onClick={() => makeHR(emp)}
+                    className="px-3 py-1 bg-purple-600 text-white rounded"
+                  >
+                    Make HR
+                  </button>
                 ) : (
                   "-"
                 )}

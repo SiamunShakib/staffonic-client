@@ -9,9 +9,14 @@ const Payroll = () => {
     fetch("http://localhost:5000/payments")
       .then((res) => res.json())
       .then((data) => {
-        // Only show pending payments
-        const pendingPayments = data.filter(p => p.status === "pending");
-        setPayments(pendingPayments);
+        // Highlighted Change: sort payments so the latest comes first
+        const sortedPayments = data.sort((a, b) => {
+          // Assuming 'createdAt' exists; fallback to _id timestamp if not
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date(parseInt(a._id.substring(0, 8), 16) * 1000);
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date(parseInt(b._id.substring(0, 8), 16) * 1000);
+          return dateB - dateA; // latest first
+        });
+        setPayments(sortedPayments);
       })
       .catch(err => console.error(err));
   };
@@ -57,7 +62,7 @@ const Payroll = () => {
             <th className="p-2">Month</th>
             <th className="p-2">Year</th>
             <th className="p-2">Payment Date</th>
-            <th className="p-2">Action</th>
+            <th className="p-2">Payment</th>
           </tr>
         </thead>
         <tbody className="text-center">
@@ -68,7 +73,7 @@ const Payroll = () => {
           ) : (
             payments.map(payment => (
               <tr key={payment._id} className="border-t">
-                <td className="p-2">{payment.employeeName}</td>
+                <td className="p-2">{payment.name}</td>
                 <td className="p-2">{payment.salary}</td>
                 <td className="p-2">{payment.month}</td>
                 <td className="p-2">{payment.year}</td>
@@ -85,7 +90,7 @@ const Payroll = () => {
                       payment.status === "paid" ? "bg-gray-400" : "bg-green-600"
                     }`}
                   >
-                    {payment.status === "paid" ? "Paid" : "Pay"}
+                    {payment.status === "paid" ? "Approved" : "Approve"}
                   </button>
                 </td>
               </tr>

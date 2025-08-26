@@ -39,6 +39,7 @@ const PaymentHistory = () => {
             <th className="p-2 text-left">Year</th>
             <th className="p-2 text-left">Amount</th>
             <th className="p-2 text-left">Transaction ID</th>
+            <th className="p-2 text-left">Payment Status</th>
           </tr>
         </thead>
         <tbody>
@@ -48,6 +49,10 @@ const PaymentHistory = () => {
               <td className="p-2">{p.year}</td>
               <td className="p-2">${p.salary}</td>
               <td className="p-2">{p._id}</td>
+              <td className="p-2" >
+                {p.status === 'pending' ? "Pending" : p.status === 'approved' ? "Paid" : p.status}
+              </td>
+              
             </tr>
           ))}
           {currentRows.length === 0 && (

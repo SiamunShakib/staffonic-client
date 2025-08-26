@@ -50,9 +50,11 @@ const EmployeeList = () => {
     const payload = {
       userId: selectedEmployee._id,
       email: selectedEmployee.email,
+      name: selectedEmployee.name,
       salary: selectedEmployee.salary,
       month,
       year,
+      status: "pending",
     };
 
     const res = await fetch("http://localhost:5000/payments", {
@@ -85,7 +87,7 @@ const EmployeeList = () => {
         </button>
       ),
     },
-    { accessorKey: "bankAccount", header: "Bank Account" },
+    { accessorKey: "bank_account_no", header: "Bank Account" },
     { accessorKey: "salary", header: "Salary" },
     {
       header: "Pay",
