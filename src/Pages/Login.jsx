@@ -59,6 +59,7 @@ const Login = () => {
         })
         .then((res) => res.json())
         .then((data) => {
+          
           if(data.insertedId || data.message === "user Already exists"){
             Swal.fire({
                 position: "center",

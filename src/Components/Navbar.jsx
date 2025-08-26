@@ -35,6 +35,16 @@ const Navbar = () => {
       </NavLink>
     </li>
     <li>
+      <NavLink to="/allEmployeeList" className="flex items-center gap-2 text-white hover:text-blue-800">
+         A Employee L
+      </NavLink>
+    </li>
+    <li>
+      <NavLink to="/payroll" className="flex items-center gap-2 text-white hover:text-blue-800">
+         Payroll
+      </NavLink>
+    </li>
+    <li>
       <NavLink to="/contact" className="flex items-center gap-2 text-blue-600 hover:text-blue-800">
          <FaEnvelope /> Contact Us
       </NavLink>

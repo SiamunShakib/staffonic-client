@@ -8,6 +8,8 @@ import WorkSheet from "../Pages/WorkSheet/WorkSheet";
 import PaymentHistory from "../Pages/PaymentHistory/PaymentHistory";
 import EmployeeList from "../Pages/EmployeeList/EmployeeList";
 import EmployeeDetails from "../Pages/EmployeeList/EmployeeDetails";
+import AllEmployeeList from "../Pages/AllEmployeeList/AllEmployeeList";
+import Payroll from "../Pages/Payroll/Payroll";
 
 
 export const Router = createBrowserRouter([
@@ -44,7 +46,15 @@ export const Router = createBrowserRouter([
         element: <PrivateRoute><EmployeeDetails/></PrivateRoute>,
         loader: ({params}) => 
           fetch(`http://localhost:5000/employees/${params.id}`)
-       }
+       },
+      {
+         path: '/allEmployeeList',
+       element: <PrivateRoute><AllEmployeeList/></PrivateRoute>
+      },
+      {
+        path: '/payroll',
+        element: <PrivateRoute><Payroll/></PrivateRoute>
+      }
     ]
   },
 ]);

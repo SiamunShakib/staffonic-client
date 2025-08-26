@@ -23,7 +23,9 @@ const Register = () => {
       email, 
       ...rest,
       createdData: new Date(),
-      verified: false};
+      verified: false,
+      isFired: false,
+    };
 
     createUser(email, password)
       .then(() => {
