@@ -11,6 +11,7 @@ import EmployeeDetails from "../Pages/EmployeeList/EmployeeDetails";
 import AllEmployeeList from "../Pages/AllEmployeeList/AllEmployeeList";
 import Payroll from "../Pages/Payroll/Payroll";
 import Progress from "../Pages/Progress/Progress";
+import Profile from "../Pages/Profile/Profile";
 
 
 export const Router = createBrowserRouter([
@@ -21,6 +22,10 @@ export const Router = createBrowserRouter([
         {
             index: true,
             Component: Home
+        },
+        {
+          path: '/profile',
+          Component: Profile
         },
         {
           path: '/register',

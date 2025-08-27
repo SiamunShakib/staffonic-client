@@ -97,7 +97,8 @@ const Navbar = () => {
         <div className="hidden md:block">
           {user? (
             <div className="flex gap-x-4">
-              <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-gray-300" />
+              <NavLink to='/profile'><img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-gray-300" />
+              </NavLink>
               <NavLink onClick={handleLogout} to="/login" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                  Logout
               </NavLink>
