@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, {  useContext, useState } from "react";
 import { Navigate, NavLink } from "react-router";
 import { FaTachometerAlt, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
 import { AuthContext } from "../Context/AuthContext";
@@ -9,7 +9,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-  const {user, logOut} = use(AuthContext)
+  const {user, logOut} = useContext(AuthContext)
 
   const links = <>
     <li>
