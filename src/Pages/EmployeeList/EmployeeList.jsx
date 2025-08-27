@@ -110,7 +110,7 @@ const EmployeeList = () => {
       cell: ({ row }) => (
         <button
           className="px-3 py-1 bg-blue-600 text-white rounded"
-          onClick={() => navigate(`/details/${row.original.email}`)}
+          onClick={() => navigate(`/employees/${row.original.email}`)}
         >
           Details
         </button>

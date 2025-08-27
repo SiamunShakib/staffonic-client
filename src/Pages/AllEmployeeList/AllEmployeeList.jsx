@@ -11,7 +11,7 @@ const AllEmployeeList = () => {
     fetch("http://localhost:5000/users")
       .then((res) => res.json())
       .then((data) => {
-        const verifiedUsers = data.filter((u) => u.isVerified);
+        const verifiedUsers = data.filter((u) => u.isVerified && u.role !== "admin");
         setEmployees(verifiedUsers);
       });
   }, []);
@@ -92,7 +92,7 @@ const AllEmployeeList = () => {
             <th className="p-2">Fire</th>
           </tr>
         </thead>
-        <tbody className="">
+        <tbody className="text-center">
           {employees.map((emp) => (
             <tr key={emp._id} className="border-t">
               <td className="p-2">{emp.name}</td>
@@ -115,17 +115,17 @@ const AllEmployeeList = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-center gap-2 items-center">
                     <span>{emp.salary}</span>
-                    <button
+                    <butto
                       onClick={() => {
                         setEditingSalary(emp._id);
                         setNewSalary(emp.salary);
                       }}
                       className="text-blue-600 ml-2"
                     >
-                      ✏️
-                    </button>
+                      ✏️edit
+                    </butto>
                   </div>
                 )}
               </td>

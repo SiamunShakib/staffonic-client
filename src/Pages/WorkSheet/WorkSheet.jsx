@@ -139,11 +139,11 @@ const WorkSheet = () => {
         </thead>
         <tbody>
           {works.map((work) => (
-            <tr key={work._id} className="border-t">
+            <tr key={work._id} className="border-t text-center">
               <td className="p-2">{work.task}</td>
               <td className="p-2">{work.hours}</td>
               <td className="p-2">{work.date}</td>
-              <td className="p-2 flex gap-3">
+              <td className="p-2 flex gap-5 justify-center">
                 <button
                   onClick={() => {
                     setEditingWork(work);
