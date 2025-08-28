@@ -1,361 +1,386 @@
-import React, {  useContext } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import Swal from "sweetalert2";
-import { Helmet } from "react-helmet-async";
-import { FaUser, FaEnvelope, FaImage, FaLock, FaArrowRight, FaGoogle } from 'react-icons/fa';
-import { HiOutlineUser, HiOutlineMail, HiOutlinePhotograph, HiOutlineKey } from 'react-icons/hi';
-import { FcGoogle } from "react-icons/fc";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { AuthContext } from "../Context/AuthContext";
 
-const Register = () => {
-  const { createUser , loginWithGoogle, updateUser, setUser} = useContext(AuthContext);
+const EmployeeList = () => {
+  const { user } = useContext(AuthContext);
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [showPayModal, setShowPayModal] = useState(false);
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [verifiedCount, setVerifiedCount] = useState(0);
+  const [unverifiedCount, setUnverifiedCount] = useState(0);
+
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
 
-  const handleCreateUser = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-    const {email,  password, ...rest } = Object.fromEntries(formData.entries());
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
 
-    const currentUser = {
-      email, 
-      ...rest,
-      createdData: new Date(),
-      verified: false,
-      isFired: false,
-    };
-
-    createUser(email, password)
-      .then(() => {
-        updateUser({
-          displayName: formData.get('name'), 
-          photoURL: formData.get('photo')
-        })
-        .then(() => {
-          // save profile info into DB
-          fetch("http://localhost:5000/users", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(currentUser),
-          })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.insertedId) {
-              setUser({currentUser});
-              Swal.fire({
-                position: "top-center",
-                icon: "success",
-                title: "Your account is created",
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              navigate(from, {replace: true});
-            }
-          });
-        })
-        .catch((error) => {
-          Swal.fire("Error", "Google login failed", error);
-        });
-      })
-      .catch((error) => {
-        if(error.code === 'auth/email-already-in-use'){
-          Swal.fire('Error', "This email is already in use.");
-        }
-        else{
-          Swal.fire("Error", error.message || 'Account creation failed')
-        }
-      });
-  };
-
-  // login with google
-  const handleGoogleLogin = () =>{
-    const role = document.querySelector('select[name="role"]')?.value;
-    const bankAccountNo = document.querySelector('input[name="bank_account_no"]')?.value;
-    const salary = document.querySelector('input[name="salary"]')?.value;
-    const designation = document.querySelector('select[name="designation"]')?.value;
-
-    // check required fields for google login
-    if(!role){
-      Swal.fire('Role Required','Please select a role before continuing with Google','warning');
-      return;
-    }
-    if(!bankAccountNo){
-      Swal.fire('Bank Account No Required','Please enter bank account number before continuing with Google','warning');
-      return;
-    }
-    if(!salary){
-      Swal.fire('Salary Required','Please enter salary before continuing with Google','warning');
-      return;
-    }
-    if(!designation){
-      Swal.fire('Designation Required','Please select designation before continuing with Google','warning');
-      return;
-    }
-
-    loginWithGoogle()
-    .then((result) =>{
-      const loggedInUser = result.user;
-
-      const currentUser = {
-        name: loggedInUser.displayName,
-        email: loggedInUser.email,
-        photo: loggedInUser.photoURL,
-        role: role,
-        bank_account_no: bankAccountNo,
-        salary: salary,
-        designation: designation,
-        createdDate: new Date()
-      }
-
-      fetch('http://localhost:5000/users', {
-        method: 'POST',
-        headers: {"content-type": "application/json"},
-        body: JSON.stringify(currentUser),
-      })
+    fetch("http://localhost:5000/users")
       .then((res) => res.json())
       .then((data) => {
-        if(data.insertedId || data.message === "user Already exists"){
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Login with Google Successful",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          navigate(from, {replace: true});
-        }
+        setEmployees(data);
+        setIsLoading(false);
+        
+        // Calculate verified and unverified counts
+        const verified = data.filter(emp => emp.isVerified).length;
+        setVerifiedCount(verified);
+        setUnverifiedCount(data.length - verified);
       })
-    })
-    .catch((error) => {
-      Swal.fire("Error", "Google login failed", error);
-      return;
+      .catch(() => setIsLoading(false));
+  }, []);
+
+  const toggleVerify = async (id) => {
+    const res = await fetch(`http://localhost:5000/users/${id}/verify`, {
+      method: "PATCH",
     });
-  }
+    const data = await res.json();
+    if (data.modifiedCount > 0) {
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp._id === id ? { ...emp, isVerified: !emp.isVerified } : emp
+        )
+      );
+      
+      // Update counts
+      setVerifiedCount(prev => {
+        const employee = employees.find(emp => emp._id === id);
+        if (employee && employee.isVerified) {
+          return prev - 1; // Was verified, now unverified
+        } else {
+          return prev + 1; // Was unverified, now verified
+        }
+      });
+      
+      setUnverifiedCount(prev => {
+        const employee = employees.find(emp => emp._id === id);
+        if (employee && employee.isVerified) {
+          return prev + 1; // Was verified, now unverified
+        } else {
+          return prev - 1; // Was unverified, now verified
+        }
+      });
+    }
+  };
+
+  const handlePay = (emp) => {
+    if (!emp.isVerified) {
+      Swal.fire("Error", "Employee not verified!", "error");
+      return;
+    }
+    setSelectedEmployee(emp);
+    setShowPayModal(true);
+  };
+
+  const submitPayment = async () => {
+    const payload = {
+      userId: selectedEmployee._id,
+      email: selectedEmployee.email,
+      name: selectedEmployee.name,
+      salary: selectedEmployee.salary,
+      month,
+      year,
+      status: "pending",
+    };
+
+    const res = await fetch("http://localhost:5000/payments", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.insertedId) {
+      Swal.fire("Success", "Payment request sent!", "success");
+      setShowPayModal(false);
+      setMonth("");
+      setYear("");
+    }
+  };
+
+  const columns = [
+    { 
+      accessorKey: "name", 
+      header: "Name",
+      cell: ({ row }) => (
+        <div className="flex items-center">
+          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white mr-3 shadow-md">
+            {row.original.name.charAt(0)}
+          </div>
+          <span className="font-medium text-gray-800">{row.original.name}</span>
+        </div>
+      ),
+    },
+    { 
+      accessorKey: "email", 
+      header: "Email",
+      cell: ({ row }) => (
+        <span className="text-gray-600">{row.original.email}</span>
+      ),
+    },
+    {
+      accessorKey: "isVerified",
+      header: "Status",
+      cell: ({ row }) => (
+        <div className="flex items-center">
+          <button
+            onClick={() => toggleVerify(row.original._id)}
+            className={`text-xl transition-all duration-300 transform hover:scale-110 ${
+              row.original.isVerified ? "text-green-600" : "text-yellow-500"
+            }`}
+            data-aos="flip-left"
+            title={row.original.isVerified ? "Click to unverify" : "Click to verify"}
+          >
+            {row.original.isVerified ? "✅" : "❌"}
+          </button>
+          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${row.original.isVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+            {row.original.isVerified ? 'Verified' : 'Pending'}
+          </span>
+        </div>
+      ),
+    },
+    { 
+      accessorKey: "bank_account_no", 
+      header: "Bank Account",
+      cell: ({ row }) => (
+        <span className="font-mono text-gray-700 bg-gray-100 px-3 py-1 rounded-lg text-sm">
+          {row.original.bank_account_no || "N/A"}
+        </span>
+      ),
+    },
+    { 
+      accessorKey: "salary", 
+      header: "Salary",
+      cell: ({ row }) => (
+        <span className="font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-lg">
+          ${row.original.salary}
+        </span>
+      ),
+    },
+    {
+      header: "Actions",
+      cell: ({ row }) => (
+        <div className="flex space-x-2">
+          <button
+            className={`px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 ${
+              row.original.isVerified
+                ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md hover:shadow-lg"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            onClick={() => handlePay(row.original)}
+            disabled={!row.original.isVerified}
+            data-aos="zoom-in"
+          >
+            Pay
+          </button>
+          <button
+            className="px-4 py-2 bg-gradient-to-r from-teal-500 to-green-600 text-white rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+            onClick={() => navigate(`/employees/${row.original.email}`)}
+            data-aos="zoom-in"
+          >
+            Details
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  const table = useReactTable({
+    data: employees,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
-    <div className=" py-10 md:py-20 flex items-center justify-center px-4 font-sans">
-      <Helmet>
-        <title>Staffonic | Register</title>
-      </Helmet>
-      <div className="w-full max-w-md bg-base-200 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
-        <div className="relative h-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-          <div className="absolute inset-0 bg-white opacity-10"></div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div 
+        className="max-w-7xl mx-auto"
+        data-aos="fade-up"
+      >
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-xl text-white shadow-lg mb-6">
+          <h2 className="text-3xl font-bold mb-2">Employee Management</h2>
+          <p className="text-blue-100">Logged in as: {user.email}</p>
         </div>
 
-        <div className="p-8">
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-8 group">
-            <div className="relative mb-4">
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center border border-gray-100 shadow-inner group-hover:rotate-6 transition-transform duration-300">
-                <FaUser className="text-blue-500 text-2xl" />
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500" data-aos="fade-right">
+            <div className="flex items-center">
+              <div className="bg-blue-100 p-3 rounded-full mr-4">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
               </div>
-              <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-pink-100 border-2 border-white flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-pink-400"></div>
+              <div>
+                <p className="text-gray-500 text-sm">Total Employees</p>
+                <h3 className="text-3xl font-bold text-gray-800">{employees.length}</h3>
               </div>
-            </div>
-            <h1 className="text-3xl font-semibold text-primary mb-1">Register Account</h1>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleCreateUser} className="space-y-4">
-            {/* grid container for 2 col on md+ */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              {/* Full Name */}
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  <HiOutlineUser className="text-blue-500" />
-                  Full Name
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    name="name"
-                    type="text"
-                    className="w-full px-4 pl-10 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
-                    placeholder="Your full name"
-                  />
-                  <FaUser className="absolute left-3 top-3.5 text-gray-400 text-sm" />
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  <HiOutlineMail className="text-blue-500" />
-                  Email Address
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    name="email"
-                    type="email"
-                    className="w-full px-4 pl-10 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
-                    placeholder="your@email.com"
-                  />
-                  <FaEnvelope className="absolute left-3 top-3.5 text-gray-400 text-sm" />
-                </div>
-              </div>
-
-              {/* Photo URL */}
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  <HiOutlinePhotograph className="text-blue-500" />
-                  Photo URL
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    name="photo"
-                    type="text"
-                    className="w-full px-4 pl-10 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
-                    placeholder="https://example.com/photo.jpg"
-                  />
-                  <FaImage className="absolute left-3 top-3.5 text-gray-400 text-sm" />
-                </div>
-              </div>
-
-              {/* Bank Account No */}
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  Bank Account No
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    name="bank_account_no"
-                    type="text"
-                    className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
-                    placeholder="Enter bank account number"
-                  />
-                </div>
-              </div>
-
-              {/* Role */}
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  <HiOutlineUser className="text-blue-500" />
-                  Select Role
-                </label>
-                <div className="relative">
-                  <select
-                    required
-                    name="role"
-                    className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
-                  >
-                    <option value="">Choose role</option>
-                    <option value="employee">Employee</option>
-                    <option value="hr">HR</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Salary */}
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  Salary
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    name="salary"
-                    type="number"
-                    min="0"
-                    className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
-                    placeholder="Enter your salary"
-                  />
-                </div>
-              </div>
-
-              {/* Designation */}
-              <div className="space-y-1 md:col-span-2">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  Designation
-                </label>
-                <div className="relative">
-                  <select
-                    required
-                    name="designation"
-                    className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
-                  >
-                    <option value="">Choose designation</option>
-                    <option value="sales_assistant">Sales Assistant</option>
-                    <option value="social_media_executive">Social Media Executive</option>
-                    <option value="digital_marketer">Digital Marketer</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Password */}
-              <div className="space-y-1 md:col-span-2">
-                <label className="text-sm font-medium text-primary/50 flex items-center gap-2">
-                  <HiOutlineKey className="text-blue-500" />
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    name="password"
-                    type="password"
-                    minLength="6"
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-                    title="Must contain at least one number, one lowercase and one uppercase letter, and at least 6 characters"
-                    className="w-full px-4 pl-10 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400 peer"
-                    placeholder="••••••••"
-                  />
-                  <FaLock className="absolute left-3 top-3.5 text-gray-400 text-sm" />
-                </div>
-                <div className="text-xs text-gray-500 mt-1 peer-focus:block hidden peer-invalid:block">
-                  Must be at least 6 characters with:
-                  <ul className="list-disc list-inside">
-                    <li>One number</li>
-                    <li>One lowercase letter</li>
-                    <li>One special letter</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <button 
-              type="submit" 
-              className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg shadow-md transition-all duration-300 flex items-center justify-center gap-2 group mt-6"
-            >
-              <span>Create Account</span>
-              <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="px-3 bg-base-200 text-gray-400 text-xs font-medium">OR</span>
             </div>
           </div>
 
-          {/* Google Signup Button */}
-          <button 
-            onClick={handleGoogleLogin}
-            className="w-full py-2.5 px-4 border border-gray-200 hover:border-blue-300 rounded-lg text-primary transition-all duration-200 flex items-center justify-center gap-2 text-sm hover:shadow-sm hover:bg-blue-50"
-          >
-            <FcGoogle className="text-red-500" />
-            Continue with Google
-          </button>
+          <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500" data-aos="fade-up">
+            <div className="flex items-center">
+              <div className="bg-green-100 p-3 rounded-full mr-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Verified Employees</p>
+                <h3 className="text-3xl font-bold text-gray-800">{verifiedCount}</h3>
+              </div>
+            </div>
+          </div>
 
-          <p className="text-center text-sm text-primary/50 mt-8">
-            Already have an account?{' '}
-            <Link to="/login" className="text-blue-600 font-medium hover:underline flex items-center justify-center gap-1">
-              Login now <FaArrowRight className="text-xs" />
-            </Link>
-          </p>
+          <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500" data-aos="fade-left">
+            <div className="flex items-center">
+              <div className="bg-yellow-100 p-3 rounded-full mr-4">
+                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Pending Verification</p>
+                <h3 className="text-3xl font-bold text-gray-800">{unverifiedCount}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Employee Table */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden" data-aos="fade-up">
+          <div className="p-6">
+            {isLoading ? (
+              <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              <>
+                <div className="overflow-x-auto rounded-lg shadow">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      {table.getHeaderGroups().map((hg) => (
+                        <tr key={hg.id}>
+                          {hg.headers.map((header) => (
+                            <th
+                              key={header.id}
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                              data-aos="fade-right"
+                            >
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                            </th>
+                          ))}
+                        </tr>
+                      ))}
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {table.getRowModel().rows.map((row, index) => (
+                        <tr 
+                          key={row.id} 
+                          className="hover:bg-blue-50 transition-colors duration-200"
+                          data-aos="fade-up"
+                          data-aos-delay={index * 50}
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                            <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {employees.length === 0 && !isLoading && (
+                  <div 
+                    className="text-center py-12 text-gray-500"
+                    data-aos="fade-in"
+                  >
+                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <p className="mt-4 text-lg">No employees found</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Pay Modal */}
+      {showPayModal && (
+        <div 
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4"
+          data-aos="fade-in"
+        >
+          <div 
+            className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden"
+            data-aos="zoom-in"
+          >
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white">
+              <h3 className="text-xl font-semibold">Pay {selectedEmployee.name}</h3>
+            </div>
+            
+            <div className="p-6">
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Salary Amount</label>
+                <div className="text-2xl font-bold text-blue-700">${selectedEmployee.salary}</div>
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Month</label>
+                <input
+                  type="text"
+                  placeholder="e.g. January"
+                  value={month}
+                  onChange={(e) => setMonth(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                />
+              </div>
+              
+              <div className="mb-6">
+                <label className="block text-gray-700 mb-2">Year</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 2023"
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                />
+              </div>
+              
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowPayModal(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={submitPayment}
+                  className="px-4 py-2 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                >
+                  Confirm Payment
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Register;
+export default EmployeeList;
