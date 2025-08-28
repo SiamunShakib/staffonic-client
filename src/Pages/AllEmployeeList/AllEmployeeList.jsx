@@ -12,6 +12,7 @@ const AllEmployeeList = () => {
     fired: 0
   });
 
+  const [loading, setLoading] = useState(true)
   // fetch verified users (both employee + HR)
   useEffect(() => {
     fetch("http://localhost:5000/users")
@@ -31,7 +32,9 @@ const AllEmployeeList = () => {
           hrs: hrCount,
           fired: firedCount
         });
-      });
+        setLoading(false)
+      })
+      .catch(()=> setLoading(false))
   }, []);
 
   // Fire employee
@@ -137,13 +140,21 @@ const AllEmployeeList = () => {
   return (
     <div className="min-h-screen bg-white p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Employee Management</h1>
           <p className="text-gray-600">Admin Dashboard - Manage all employees and HR staff</p>
         </div>
         
-        {/* Stats Cards */}
+        {
+          loading? (
+             <div className="flex flex-col items-center justify-center min-h-[400px]">
+            <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-gray-600">Loading employees...</p>
+          </div>
+          ) : (
+            <>
+              {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-indigo-100 rounded-xl p-6 shadow-lg">
             <div className="flex items-center">
@@ -303,6 +314,10 @@ const AllEmployeeList = () => {
             )}
           </div>
         </div>
+            </>
+          )
+        }
+        
       </div>
     </div>
   );
