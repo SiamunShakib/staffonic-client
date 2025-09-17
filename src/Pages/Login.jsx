@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import { Helmet } from "react-helmet-async";
@@ -11,7 +11,7 @@ import { AuthContext } from "../Context/AuthContext";
 const Login = () => {
 
     const navigate = useNavigate();
-    const { loginUser, loginWithGoogle} = use(AuthContext);
+    const { loginUser, loginWithGoogle} = useContext(AuthContext);
     const location = useLocation();
     const from = location.state?.from?.pathname || '/';
 
