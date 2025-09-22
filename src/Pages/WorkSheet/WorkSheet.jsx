@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../../Context/AuthContext";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Helmet } from "react-helmet-async";
 
 const WorkSheet = () => {
   const { user } = useContext(AuthContext);
@@ -113,6 +114,9 @@ const WorkSheet = () => {
 
   return (
     <div className="py-10 px-4 md:px-8 bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+      <Helmet>
+              <title>Staffonic | WorkSheet</title>
+            </Helmet>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8" data-aos="fade-down">

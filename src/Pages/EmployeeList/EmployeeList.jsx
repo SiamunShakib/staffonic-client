@@ -5,6 +5,7 @@ import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-tabl
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Helmet } from "react-helmet-async";
 
 const EmployeeList = () => {
   const { user } = useContext(AuthContext);
@@ -203,6 +204,9 @@ const EmployeeList = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <Helmet>
+              <title>Staffonic | Employee List</title>
+            </Helmet>
       <div 
         className="max-w-7xl mx-auto"
         data-aos="fade-up"

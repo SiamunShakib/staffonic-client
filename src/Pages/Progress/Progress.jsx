@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FiFilter, FiUser, FiCalendar, FiTrendingUp, FiClock, FiCheckCircle } from "react-icons/fi";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Helmet } from "react-helmet-async";
 
 const Progress = () => {
   const [works, setWorks] = useState([]);
@@ -114,6 +115,9 @@ const Progress = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <Helmet>
+              <title>Staffonic | Progress</title>
+            </Helmet>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div 

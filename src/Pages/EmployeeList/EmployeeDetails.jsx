@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router";
 import {
   BarChart,
@@ -66,6 +67,9 @@ const EmployeeDetails = () => {
 
   return (
     <div className="p-6">
+      <Helmet>
+              <title>Staffonic | Details</title>
+            </Helmet>
       {employee && (
         <>
           <h2 className="text-2xl font-bold mb-4">{employee.name}</h2>

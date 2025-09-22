@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 
 const Payroll = () => {
@@ -108,6 +109,9 @@ const Payroll = () => {
 
   return (
     <div className="min-h-screen  p-6">
+      <Helmet>
+              <title>Staffonic | Payroll</title>
+            </Helmet>
       <div className="max-w-7xl mx-auto">
         
         {/* Loader Section */}

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { FaChevronLeft, FaChevronRight, FaMoneyCheckAlt } from "react-icons/fa";
 import { Fade } from "react-awesome-reveal";
+import { Helmet } from "react-helmet-async";
 
 const PaymentHistory = () => {
   const { user } = useContext(AuthContext);
@@ -48,6 +49,9 @@ const PaymentHistory = () => {
 
   return (
     <div className="py-10 px-4 md:px-8 bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+      <Helmet>
+              <title>Staffonic | Payment History</title>
+            </Helmet>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
