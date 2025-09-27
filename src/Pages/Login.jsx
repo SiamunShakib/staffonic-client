@@ -34,7 +34,7 @@ const Login = () => {
         });
       })
       .catch(error =>{
-         Swal.fire("Error", "Google login failed", error);
+         Swal.fire("Login Error", "Invalid User Name or Password", error);
 
       })
     }

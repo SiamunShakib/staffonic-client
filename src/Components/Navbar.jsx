@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen(!menuOpen);
-  const { user, logOut } = useContext(AuthContext);
+  const { user, userData, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -42,7 +42,7 @@ const Navbar = () => {
             <FaTachometerAlt /> Dashboard
           </span>
 
-          {user.role === "employee" && (
+          {userData?.role === "employee" && (
             <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 hidden group-hover:block">
               <li>
                 <NavLink
@@ -63,7 +63,7 @@ const Navbar = () => {
             </ul>
           )}
 
-          {user.role === "hr" && (
+          {userData?.role === "hr" && (
             <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 hidden group-hover:block">
               <li>
                 <NavLink
@@ -84,7 +84,7 @@ const Navbar = () => {
             </ul>
           )}
 
-          {user.role === "admin" && (
+          {userData?.role === "admin" && (
             <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 hidden group-hover:block">
               <li>
                 <NavLink
@@ -125,8 +125,8 @@ const Navbar = () => {
           <a href="/">
             <img src="/public/logo.png" alt="Logo" className="h-12" />
           </a>
-          <h2 className="text-white">{user?.name}</h2>
-          <h2 className="text-gray-300 capitalize">{user?.role} hello</h2>
+          <h2 className="text-white">{userData?.name}</h2>
+          <h2 className="text-gray-300 capitalize">{userData?.role}</h2>
         </div>
 
         <div className="md:hidden">
@@ -175,7 +175,7 @@ const Navbar = () => {
                 alt="Profile"
                 className="w-8 h-8 rounded-full border"
               />
-              <span className="text-gray-700 text-sm">{user.displayName}</span>
+              <span className="text-gray-700 text-sm">{userData?.name || user.displayName}</span>
               <NavLink
                 onClick={handleLogout}
                 to="/login"

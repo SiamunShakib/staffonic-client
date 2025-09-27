@@ -12,6 +12,7 @@ import AllEmployeeList from "../Pages/AllEmployeeList/AllEmployeeList";
 import Payroll from "../Pages/Payroll/Payroll";
 import Progress from "../Pages/Progress/Progress";
 import Profile from "../Pages/Profile/Profile";
+import Contact from "../Pages/Contact/Contact";
 
 
 export const Router = createBrowserRouter([
@@ -64,6 +65,10 @@ export const Router = createBrowserRouter([
       {
         path: '/payroll',
         element: <PrivateRoute><Payroll/></PrivateRoute>
+      },
+      {
+        path: '/contact',
+        Component: Contact
       }
     ]
   },

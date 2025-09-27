@@ -13,62 +13,61 @@ import { auth } from '../../firebase.init';
 
 const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);        // Firebase user
+    const [userData, setUserData] = useState(null); // Backend user
     const provider = new GoogleAuthProvider();
 
     const createUser = (email, password) => {
         setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password);
-    }
+    };
 
     const loginUser = (email, password) => {
         setLoading(true);
         return signInWithEmailAndPassword(auth, email, password);
-    }
+    };
 
     const loginWithGoogle = () => {
         setLoading(true);
         return signInWithPopup(auth, provider);
-    }
+    };
 
     const logOut = () => signOut(auth);
 
     const updateUser = (updatedData) => {
         setLoading(true);
         return updateProfile(auth.currentUser, updatedData);
-    }
+    };
+
+    // Fetch userData from backend
+    const fetchUserData = async (currentUser) => {
+        try {
+            const res = await fetch(`http://localhost:5000/users?email=${currentUser.email}`);
+            const data = await res.json();
+            if (data.length > 0) setUserData(data[0]);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            setUser(currentUser);
+
             if (currentUser) {
-                try {
-                    // Fetch full user from backend
-                    const res = await fetch(`http://localhost:5000/users?email=${currentUser.email}`);
-                    const data = await res.json();
-                    if (data.length > 0) {
-                        setUser(data[0]); // backend user with role, fired, etc.
-                    } else {
-                        // fallback if user not in backend yet
-                        setUser({
-                            name: currentUser.displayName || "",
-                            email: currentUser.email,
-                            photoURL: currentUser.photoURL || "",
-                            role: "employee", // default
-                            fired: false      // default
-                        });
-                    }
-                } catch (err) {
-                    console.error(err);
-                    setUser({
-                        name: currentUser.displayName || "",
-                        email: currentUser.email,
-                        photoURL: currentUser.photoURL || "",
-                        role: "employee",
-                        fired: false
-                    });
-                }
+                // set default immediately
+                setUserData({
+                    name: currentUser.displayName || "",
+                    email: currentUser.email,
+                    photoURL: currentUser.photoURL || "",
+                    role: "employee",
+                    fired: false
+                });
+
+                // fetch backend data immediately
+                fetchUserData(currentUser);
             } else {
-                setUser(null);
+                setUserData(null);
             }
             setLoading(false);
         });
@@ -76,16 +75,25 @@ const AuthProvider = ({ children }) => {
         return () => unSubscribe();
     }, []);
 
+    // Poll backend every 5 seconds if user exists
+    useEffect(() => {
+        if (!user) return;
+        const interval = setInterval(() => fetchUserData(user), 5000);
+        return () => clearInterval(interval);
+    }, [user]);
+
     const authInfo = {
         user,
+        userData,  
         setUser,
+        setUserData,
         loading,
         createUser,
         loginUser,
         logOut,
         updateUser,
         loginWithGoogle
-    }
+    };
 
     return (
         <AuthContext.Provider value={authInfo}>
