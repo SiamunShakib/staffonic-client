@@ -86,16 +86,16 @@ const Footer = () => {
 
           <div className="sm:flex sm:items-center sm:justify-between">
             <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-              © 2023{" "}
+              © 2025{" "}
               <a href="https://flowbite.com/" className="hover:underline">
-                Flowbite™
+                Siamun Shakib
               </a>
               . All Rights Reserved.
             </span>
             <div className="flex mt-4 sm:justify-center sm:mt-0">
-                <a href="/" className="text-xl text-white "><FaFacebookF/></a>
-                <a href="/" className="text-xl text-white mx-4"><TbBrandGithubFilled/></a>
-                <a href="/" className="text-xl text-white "><TfiLinkedin/></a>
+                <a href="https://www.facebook.com/siamun.shakib.2024/" target="blank" className="text-xl text-white "><FaFacebookF/></a>
+                <a href="https://github.com/SiamunShakib" target="blank" className="text-xl text-white mx-4"><TbBrandGithubFilled/></a>
+                <a href="https://www.linkedin.com/in/siamun-shakib-608845255/" target="blank" className="text-xl text-white "><TfiLinkedin/></a>
             </div>
           </div>
         </div>

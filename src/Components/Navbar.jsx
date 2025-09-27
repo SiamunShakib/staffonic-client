@@ -43,7 +43,8 @@ const Navbar = () => {
           </span>
 
           {userData?.role === "employee" && (
-            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 hidden group-hover:block">
+            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 
+              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200">
               <li>
                 <NavLink
                   to="/workSheet"
@@ -64,7 +65,8 @@ const Navbar = () => {
           )}
 
           {userData?.role === "hr" && (
-            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 hidden group-hover:block">
+            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 
+              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200">
               <li>
                 <NavLink
                   to="/employeeList"
@@ -85,7 +87,8 @@ const Navbar = () => {
           )}
 
           {userData?.role === "admin" && (
-            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 hidden group-hover:block">
+            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 
+              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200">
               <li>
                 <NavLink
                   to="/allEmployeeList"
