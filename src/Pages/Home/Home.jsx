@@ -1,8 +1,8 @@
 import React from 'react';
 import Banner from './Banner';
-import Random from './Random';
 import Testimonials from './Testimonials';
 import { Helmet } from 'react-helmet-async';
+import ServicesSection from './Service';
 
 const Home = () => {
     return (
@@ -11,7 +11,7 @@ const Home = () => {
                     <title>Staffonic | Home</title>
                   </Helmet>
             <Banner></Banner>
-            <Random></Random>
+            <ServicesSection></ServicesSection>
             <Testimonials></Testimonials>
         </div>
     );

@@ -117,7 +117,7 @@ const WorkSheet = () => {
       <Helmet>
               <title>Staffonic | WorkSheet</title>
             </Helmet>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl px-3 md:px-5 mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8" data-aos="fade-down">
           <div>

@@ -13,8 +13,8 @@ import { auth } from '../../firebase.init';
 
 const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);        // Firebase user
-    const [userData, setUserData] = useState(null); // Backend user
+    const [user, setUser] = useState(null);        
+    const [userData, setUserData] = useState(null); 
     const provider = new GoogleAuthProvider();
 
     const createUser = (email, password) => {
@@ -55,7 +55,6 @@ const AuthProvider = ({ children }) => {
             setUser(currentUser);
 
             if (currentUser) {
-                // set default immediately
                 setUserData({
                     name: currentUser.displayName || "",
                     email: currentUser.email,
@@ -64,7 +63,6 @@ const AuthProvider = ({ children }) => {
                     fired: false
                 });
 
-                // fetch backend data immediately
                 fetchUserData(currentUser);
             } else {
                 setUserData(null);
@@ -75,7 +73,6 @@ const AuthProvider = ({ children }) => {
         return () => unSubscribe();
     }, []);
 
-    // Poll backend every 5 seconds if user exists
     useEffect(() => {
         if (!user) return;
         const interval = setInterval(() => fetchUserData(user), 5000);

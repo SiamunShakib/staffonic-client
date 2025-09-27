@@ -4,11 +4,13 @@ import { useNavigate, Link } from "react-router";
 import Swal from "sweetalert2";
 import { Helmet } from "react-helmet-async";
 import { FaArrowRight, FaHome, FaLock, FaEnvelope } from "react-icons/fa";
+import axios from "axios";
 
 const Register = () => {
   const { createUser, updateUser, setUser } = useContext(AuthContext);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [profilePic, setProfilePic] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ const Register = () => {
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    const imageUrl = form.image.value;
+    const imageUrl = profilePic
     const role = form.role.value;
     const bankAccount = form.bankAccount.value;
     const salary = parseFloat(form.salary.value) || 0;
@@ -88,6 +90,16 @@ const Register = () => {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const image = e.target.files[0];
+    const formData = new FormData();
+    formData.append('image', image);
+    const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key
+}`;
+    const res = await axios.post(imageUploadUrl, formData)
+    setProfilePic(res.data.data.url)
+  }
+
   return (
     <div className="py-10 md:py-20 flex items-center justify-center px-4">
       <Helmet>
@@ -150,11 +162,12 @@ const Register = () => {
             </div>
 
             <div className="relative">
-              <label className="block mb-1 text-sm font-medium text-gray-600">Profile Image URL</label>
+              <label className="block mb-1 text-sm font-medium text-gray-600">Upload your Image</label>
               <input
+                onChange={handleImageUpload}
                 required
                 name="image"
-                type="text"
+                type="file"
                 className="w-full px-4 pl-10 py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all placeholder-gray-400"
                 placeholder="Profile Image URL"
               />

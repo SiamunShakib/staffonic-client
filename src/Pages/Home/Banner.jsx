@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
+import { Link } from 'react-router';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -8,7 +9,6 @@ const HeroSection = () => {
   useEffect(() => {
     setIsVisible(true);
     
-    // Set up the floating particles
     const particlesContainer = document.querySelector('.particles');
     if (particlesContainer) {
       for (let i = 0; i < 40; i++) {
@@ -16,7 +16,6 @@ const HeroSection = () => {
       }
     }
 
-    // Set up the canvas animation
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext('2d');
@@ -39,7 +38,6 @@ const HeroSection = () => {
       const animate = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Draw connections
         ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
         ctx.lineWidth = 1;
         
@@ -105,7 +103,7 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-indigo-50 flex items-center justify-center px-4 py-12 overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-indigo-50 flex items-center justify-center px-4 py-12 overflow-hidden relative w-full ">
       {/* Canvas background animation */}
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0"></canvas>
       
@@ -138,10 +136,13 @@ const HeroSection = () => {
         {/* Special CTA Button with advanced effects */}
         <div className={`transition-all duration-1000 ease-out delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <button className="magic-button group px-8 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-semibold text-lg inline-flex items-center justify-center transition-all duration-500 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden">
+            
+            <Link to="/login">
             <span className="relative z-10 flex items-center">
               Join with Staffonic
               <FiArrowRight className="ml-3 transform group-hover:translate-x-2 transition-transform duration-300" />
             </span>
+            </Link>
             <span className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
             <span className="absolute inset-0 rounded-2xl bg-white opacity-0 group-hover:opacity-10 group-hover:animate-pulse-shine"></span>
           </button>

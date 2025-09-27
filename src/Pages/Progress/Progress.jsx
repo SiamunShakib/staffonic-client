@@ -13,7 +13,6 @@ const Progress = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Initialize AOS
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -22,7 +21,6 @@ const Progress = () => {
     });
   }, []);
 
-  // fetch all works + users
   useEffect(() => {
     setLoading(true);
     
@@ -51,7 +49,6 @@ const Progress = () => {
     });
   }, []);
 
-  // filter works when employee or month changes
   useEffect(() => {
     let result = [...works];
 
@@ -70,33 +67,27 @@ const Progress = () => {
     setFilteredWorks(result);
   }, [selectedEmployee, selectedMonth, works]);
 
-  // Calculate total hours for summary
   const totalHours = filteredWorks.reduce((total, work) => total + (parseFloat(work.hours) || 0), 0);
   const totalTasks = filteredWorks.length;
 
-  // Safe function to get initial from email
   const getInitial = (email) => {
     if (!email || typeof email !== 'string') return '?';
     return email.charAt(0).toUpperCase();
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 mb-4 animate-pulse">
-            <FiTrendingUp size={28} />
+    return  (
+          <div className="flex flex-col items-center justify-center min-h-[400px]">
+            <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-600 text-lg font-medium">Loading Progress data...</p>
           </div>
-          <h2 className="text-xl font-semibold text-indigo-800">Loading employee data...</h2>
-        </div>
-      </div>
-    );
+        );
   }
 
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center bg-white p-8 rounded-xl shadow-lg max-w-md">
+        <div className="text-center  py-8  rounded-xl shadow-lg max-w-7xl px-3 md:px-5 mx-auto">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-red-600 mb-4">
             <FiTrendingUp size={28} />
           </div>
@@ -118,7 +109,7 @@ const Progress = () => {
       <Helmet>
               <title>Staffonic | Progress</title>
             </Helmet>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl px-3 md:px-5 mx-auto">
         {/* Header */}
         <div 
           className="text-center mb-8 py-6 rounded-xl bg-white shadow-lg"

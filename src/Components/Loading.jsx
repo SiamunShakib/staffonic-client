@@ -79,7 +79,6 @@ const styles = {
   },
 };
 
-// Add styles to the document head
 const styleSheet = document.createElement('style');
 styleSheet.innerText = `
   @keyframes rotate {

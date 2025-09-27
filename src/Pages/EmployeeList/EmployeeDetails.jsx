@@ -42,7 +42,7 @@ const EmployeeDetails = () => {
         const filtered = data.filter(
           (p) => p.email === email && p.status === "paid"
         );
-        // add monthYear field for X-axis
+      
         const withMonthYear = filtered.map((p) => ({
           ...p,
           monthYear: `${p.month}-${p.year}`,

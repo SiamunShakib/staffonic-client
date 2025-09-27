@@ -120,13 +120,11 @@ const Navbar = () => {
 
   return (
     <nav className="bg-blue-950 shadow-md px-4 py-1 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-3 md:px-5 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <a href="/">
             <img src="/public/logo.png" alt="Logo" className="h-12" />
           </a>
-          <h2 className="text-white">{userData?.name}</h2>
-          <h2 className="text-gray-300 capitalize">{userData?.role}</h2>
         </div>
 
         <div className="md:hidden">

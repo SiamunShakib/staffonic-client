@@ -19,7 +19,7 @@ const AllEmployeeList = () => {
     fetch("http://localhost:5000/users")
       .then((res) => res.json())
       .then((data) => {
-        const validUsers = data.filter((u) => u.role !== "admin"); // keep all staff
+        const validUsers = data.filter((u) => u.role !== "admin"); 
         setEmployees(validUsers);
 
         const employeeCount = validUsers.filter(
@@ -141,7 +141,7 @@ const AllEmployeeList = () => {
       <Helmet>
         <title>Staffonic | All Employee</title>
       </Helmet>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl px-3 md:px-5 mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">

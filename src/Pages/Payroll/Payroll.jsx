@@ -101,7 +101,6 @@ const Payroll = () => {
       });
   };
 
-  // Safe function to get initials
   const getInitials = (name) => {
     if (!name || typeof name !== 'string') return '?';
     return name.charAt(0).toUpperCase();
@@ -112,7 +111,7 @@ const Payroll = () => {
       <Helmet>
               <title>Staffonic | Payroll</title>
             </Helmet>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl px-3 md:px-5 mx-auto">
         
         {/* Loader Section */}
         {loading ? (

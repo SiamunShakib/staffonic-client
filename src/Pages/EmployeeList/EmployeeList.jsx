@@ -33,7 +33,6 @@ const EmployeeList = () => {
         setEmployees(data);
         setIsLoading(false);
         
-        // Calculate verified and unverified counts
         const verified = data.filter(emp => emp.isVerified).length;
         setVerifiedCount(verified);
         setUnverifiedCount(data.length - verified);
@@ -57,18 +56,18 @@ const EmployeeList = () => {
       setVerifiedCount(prev => {
         const employee = employees.find(emp => emp._id === id);
         if (employee && employee.isVerified) {
-          return prev - 1; // Was verified, now unverified
+          return prev - 1; 
         } else {
-          return prev + 1; // Was unverified, now verified
+          return prev + 1; 
         }
       });
       
       setUnverifiedCount(prev => {
         const employee = employees.find(emp => emp._id === id);
         if (employee && employee.isVerified) {
-          return prev + 1; // Was verified, now unverified
+          return prev + 1; 
         } else {
-          return prev - 1; // Was unverified, now verified
+          return prev - 1; 
         }
       });
     }
@@ -208,7 +207,7 @@ const EmployeeList = () => {
               <title>Staffonic | Employee List</title>
             </Helmet>
       <div 
-        className="max-w-7xl mx-auto"
+        className="max-w-7xl px-3 md:px-5 mx-auto"
         data-aos="fade-up"
       >
         {/* Header Section */}
@@ -266,10 +265,11 @@ const EmployeeList = () => {
         <div className="bg-white rounded-xl shadow-lg overflow-hidden" data-aos="fade-up">
           <div className="p-6">
             {isLoading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : (
+          <div className="flex flex-col items-center justify-center min-h-[400px]">
+            <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-600 text-lg font-medium">Loading Employee data...</p>
+          </div>
+        ): (
               <>
                 <div className="overflow-x-auto rounded-lg shadow">
                   <table className="min-w-full divide-y divide-gray-200">
@@ -306,18 +306,6 @@ const EmployeeList = () => {
                     </tbody>
                   </table>
                 </div>
-
-                {employees.length === 0 && !isLoading && (
-                  <div 
-                    className="text-center py-12 text-gray-500"
-                    data-aos="fade-in"
-                  >
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <p className="mt-4 text-lg">No employees found</p>
-                  </div>
-                )}
               </>
             )}
           </div>
