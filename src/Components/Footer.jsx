@@ -12,7 +12,7 @@ const Footer = () => {
             <div className="mb-6 md:mb-0">
               <a href="https://flowbite.com/" className="flex items-center">
                 <img
-                  src="/public/logo.png"
+                  src="/logo.png"
                   className="h-16 me-3"
                   alt="FlowBite Logo"
                 />

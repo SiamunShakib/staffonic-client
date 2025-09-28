@@ -13,7 +13,7 @@ const PaymentHistory = () => {
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:5000/payments/${user.email}`)
+    fetch(`https://staffonic-server.vercel.app/payments/${user.email}`)
       .then((res) => res.json())
       .then((data) => {
         const sorted = data.sort((a, b) => {

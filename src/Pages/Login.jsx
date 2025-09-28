@@ -52,7 +52,7 @@ const Login = () => {
           createdDate: new Date()
         }
 
-        fetch('http://localhost:5000/users', {
+        fetch('https://staffonic-server.vercel.app/users', {
           method: 'POST',
           headers: {"content-type": "application/json"},
           body: JSON.stringify(currentUser),

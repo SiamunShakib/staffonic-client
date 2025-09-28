@@ -29,14 +29,14 @@ const EmployeeDetails = () => {
 
   useEffect(() => {
     // fetch employee
-    fetch("http://localhost:5000/users")
+    fetch("https://staffonic-server.vercel.app/users")
       .then((res) => res.json())
       .then((data) => {
         setEmployee(data.find((u) => u.email === email));
       });
 
     // fetch paid payments
-    fetch("http://localhost:5000/payments")
+    fetch("https://staffonic-server.vercel.app/payments")
       .then((res) => res.json())
       .then((data) => {
         const filtered = data.filter(

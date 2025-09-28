@@ -25,11 +25,11 @@ const Progress = () => {
     setLoading(true);
     
     Promise.all([
-      fetch("http://localhost:5000/workRecordsAll").then(res => {
+      fetch("https://staffonic-server.vercel.app/workRecordsAll").then(res => {
         if (!res.ok) throw new Error('Failed to fetch work records');
         return res.json();
       }),
-      fetch("http://localhost:5000/users").then(res => {
+      fetch("https://staffonic-server.vercel.app/users").then(res => {
         if (!res.ok) throw new Error('Failed to fetch employees');
         return res.json();
       })

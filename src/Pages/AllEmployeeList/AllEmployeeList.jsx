@@ -16,7 +16,7 @@ const AllEmployeeList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/users")
+    fetch("https://staffonic-server.vercel.app/users")
       .then((res) => res.json())
       .then((data) => {
         const validUsers = data.filter((u) => u.role !== "admin"); 
@@ -57,7 +57,7 @@ const AllEmployeeList = () => {
       color: "#111827",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/users/${emp._id}/fire`, {
+        fetch(`https://staffonic-server.vercel.app/users/${emp._id}/fire`, {
           method: "PATCH",
         })
           .then((res) => res.json())
@@ -85,7 +85,7 @@ const AllEmployeeList = () => {
   };
 
   const makeHR = (emp) => {
-    fetch(`http://localhost:5000/users/${emp._id}/makeHR`, {
+    fetch(`https://staffonic-server.vercel.app/users/${emp._id}/makeHR`, {
       method: "PATCH",
     })
       .then((res) => res.json())
@@ -112,7 +112,7 @@ const AllEmployeeList = () => {
 
   const saveSalary = (empId) => {
     const parsedSalary = parseFloat(newSalary) || 0;
-    fetch(`http://localhost:5000/users/${empId}/salary`, {
+    fetch(`https://staffonic-server.vercel.app/users/${empId}/salary`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ salary: parsedSalary }),

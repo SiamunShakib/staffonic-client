@@ -58,18 +58,18 @@ const Register = () => {
         createdAt: new Date(),
       };
 
-      const checkRes = await fetch(`http://localhost:5000/users?email=${email}`);
+      const checkRes = await fetch(`https://staffonic-server.vercel.app/users?email=${email}`);
       const existingUsers = await checkRes.json();
 
       if (existingUsers.length === 0) {
-        await fetch("http://localhost:5000/users", {
+        await fetch("https://staffonic-server.vercel.app/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newUser),
         });
       }
 
-      const savedUserRes = await fetch(`http://localhost:5000/users?email=${email}`);
+      const savedUserRes = await fetch(`https://staffonic-server.vercel.app/users?email=${email}`);
       const savedUsers = await savedUserRes.json();
       if (savedUsers.length > 0) {
         setUser(savedUsers[0]);

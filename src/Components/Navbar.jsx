@@ -30,7 +30,11 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/"
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+          className={({ isActive }) => 
+            `flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              isActive ? "bg-blue-100 text-blue-700" : "text-white hover:bg-gray-100"
+            }`
+          }
         >
           <FaHome /> Home
         </NavLink>
@@ -38,17 +42,18 @@ const Navbar = () => {
 
       {user && (
         <li className="relative group">
-          <span className="flex items-center gap-2 text-blue-600 hover:text-blue-800 cursor-pointer">
+          <span className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-700 cursor-pointer transition-colors">
             <FaTachometerAlt /> Dashboard
           </span>
 
+          {/* ✅ Desktop (hover) */}
           {userData?.role === "employee" && (
-            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 
-              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200">
+            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-lg p-2 space-y-1 z-50 
+              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 border border-gray-200 hidden md:block">
               <li>
                 <NavLink
                   to="/workSheet"
-                  className="block px-3 py-2 text-gray-700 hover:bg-blue-100 rounded"
+                  className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
                 >
                   Work Sheet
                 </NavLink>
@@ -56,7 +61,7 @@ const Navbar = () => {
               <li>
                 <NavLink
                   to="/paymentHistory"
-                  className="block px-3 py-2 text-gray-700 hover:bg-blue-100 rounded"
+                  className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
                 >
                   Payment History
                 </NavLink>
@@ -65,12 +70,12 @@ const Navbar = () => {
           )}
 
           {userData?.role === "hr" && (
-            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 
-              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200">
+            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-lg p-2 space-y-1 z-50 
+              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 border border-gray-200 hidden md:block">
               <li>
                 <NavLink
                   to="/employeeList"
-                  className="block px-3 py-2 text-gray-700 hover:bg-blue-100 rounded"
+                  className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
                 >
                   Employee List
                 </NavLink>
@@ -78,7 +83,7 @@ const Navbar = () => {
               <li>
                 <NavLink
                   to="/progress"
-                  className="block px-3 py-2 text-gray-700 hover:bg-blue-100 rounded"
+                  className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
                 >
                   Progress
                 </NavLink>
@@ -87,12 +92,12 @@ const Navbar = () => {
           )}
 
           {userData?.role === "admin" && (
-            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md p-2 space-y-2 z-50 
-              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200">
+            <ul className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-lg p-2 space-y-1 z-50 
+              invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 border border-gray-200 hidden md:block">
               <li>
                 <NavLink
                   to="/allEmployeeList"
-                  className="block px-3 py-2 text-gray-700 hover:bg-blue-100 rounded"
+                  className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
                 >
                   All Employee List
                 </NavLink>
@@ -100,7 +105,71 @@ const Navbar = () => {
               <li>
                 <NavLink
                   to="/payroll"
-                  className="block px-3 py-2 text-gray-700 hover:bg-blue-100 rounded"
+                  className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
+                >
+                  Payroll
+                </NavLink>
+              </li>
+            </ul>
+          )}
+
+          {/*  Mobile (always visible, no hover) */}
+          {userData?.role === "employee" && (
+            <ul className="md:hidden mt-2 pl-6 space-y-1">
+              <li>
+                <NavLink
+                  to="/workSheet"
+                  className="block px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
+                >
+                  Work Sheet
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/paymentHistory"
+                  className="block px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
+                >
+                  Payment History
+                </NavLink>
+              </li>
+            </ul>
+          )}
+
+          {userData?.role === "hr" && (
+            <ul className="md:hidden mt-2 pl-6 space-y-1">
+              <li>
+                <NavLink
+                  to="/employeeList"
+                  className="block px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
+                >
+                  Employee List
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/progress"
+                  className="block px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
+                >
+                  Progress
+                </NavLink>
+              </li>
+            </ul>
+          )}
+
+          {userData?.role === "admin" && (
+            <ul className="md:hidden mt-2 pl-6 space-y-1">
+              <li>
+                <NavLink
+                  to="/allEmployeeList"
+                  className="block px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
+                >
+                  All Employee List
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/payroll"
+                  className="block px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
                 >
                   Payroll
                 </NavLink>
@@ -113,7 +182,11 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/contact"
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+          className={({ isActive }) => 
+            `flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              isActive ? "bg-blue-100 text-white hover:bg-gray-100 hover:text-gray-700" : "text-gray-700 hover:text-gray-700 hover:bg-gray-100"
+            }`
+          }
         >
           <FaEnvelope /> Contact Us
         </NavLink>
@@ -122,44 +195,43 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="bg-blue-950 shadow-md px-4 py-1 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-3 md:px-5 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
+    <nav className="backdrop-blur-md text-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 py-1 flex justify-between items-center">
+        <div className="flex items-center space-x-3">
           <a href="/">
-            <img src="/public/logo.png" alt="Logo" className="h-12" />
+            <img src="/logo.png" alt="Logo" className="h-10" />
           </a>
         </div>
 
         <div className="md:hidden">
-          <button onClick={toggleMenu} className="text-2xl text-gray-700">
-            {menuOpen ? <FaTimes /> : <FaBars />}
+          <button onClick={toggleMenu} className="text-gray-600 hover:text-blue-600 p-2 rounded-lg hover:bg-gray-100">
+            {menuOpen ? <FaTimes className="text-lg" /> : <FaBars className="text-lg" />}
           </button>
         </div>
 
-        <ul className="hidden md:flex space-x-6 text-lg">{links}</ul>
+        <ul className="hidden md:flex items-center space-x-2">{links}</ul>
 
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center space-x-4">
           {user ? (
-            <div className="flex gap-x-4">
-              <NavLink to="/profile">
+            <>
+              <NavLink to="/profile" className="flex items-center space-x-3 hover:bg-gray-100 rounded-lg p-2 transition-colors">
                 <img
                   src={user.photoURL}
                   alt="Profile"
-                  className="w-10 h-10 rounded-full border border-gray-300"
+                  className="w-8 h-8 rounded-full border border-gray-300"
                 />
               </NavLink>
-              <NavLink
+              <button
                 onClick={handleLogout}
-                to="/login"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
               >
                 Logout
-              </NavLink>
-            </div>
+              </button>
+            </>
           ) : (
             <NavLink
               to="/login"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
             >
               Login
             </NavLink>
@@ -168,33 +240,33 @@ const Navbar = () => {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden mt-3 space-y-2 px-4 pb-4 border-t pt-3 bg-white shadow-inner">
+        <div className="md:hidden bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
           {user ? (
-            <div className="flex items-center justify-between gap-2 pt-2">
-              <img
-                src={user.photoURL}
-                alt="Profile"
-                className="w-8 h-8 rounded-full border"
-              />
-              <span className="text-gray-700 text-sm">{userData?.name || user.displayName}</span>
-              <NavLink
+            <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+              <div className="flex items-center space-x-3">
+                <img
+                  src={user.photoURL}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full border border-gray-300"
+                />
+              </div>
+              <button
                 onClick={handleLogout}
-                to="/login"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-xs"
               >
                 Logout
-              </NavLink>
+              </button>
             </div>
           ) : (
             <NavLink
               to="/login"
-              className="block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="block w-full text-center mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               onClick={() => setMenuOpen(false)}
             >
               Login
             </NavLink>
           )}
-          <ul>{links}</ul>
+          <ul className="space-y-2">{links}</ul>
         </div>
       )}
     </nav>

@@ -16,7 +16,7 @@ const Payroll = () => {
   // Fetch pending payments
   const fetchPayments = () => {
     setLoading(true);
-    fetch("http://localhost:5000/payments")
+    fetch("https://staffonic-server.vercel.app/payments")
       .then((res) => res.json())
       .then((data) => {
         // Sort payments so the latest comes first
@@ -54,7 +54,7 @@ const Payroll = () => {
   const handlePay = (paymentId) => {
     const currentDate = new Date().toISOString();
 
-    fetch(`http://localhost:5000/payments/${paymentId}`, {
+    fetch(`https://staffonic-server.vercel.app/payments/${paymentId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: "paid", paymentDate: currentDate }),

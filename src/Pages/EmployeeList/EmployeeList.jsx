@@ -27,7 +27,7 @@ const EmployeeList = () => {
       easing: 'ease-out-cubic',
     });
 
-    fetch("http://localhost:5000/users")
+    fetch("https://staffonic-server.vercel.app/users")
       .then((res) => res.json())
       .then((data) => {
         setEmployees(data);
@@ -41,7 +41,7 @@ const EmployeeList = () => {
   }, []);
 
   const toggleVerify = async (id) => {
-    const res = await fetch(`http://localhost:5000/users/${id}/verify`, {
+    const res = await fetch(`https://staffonic-server.vercel.app/users/${id}/verify`, {
       method: "PATCH",
     });
     const data = await res.json();
@@ -93,7 +93,7 @@ const EmployeeList = () => {
       status: "pending",
     };
 
-    const res = await fetch("http://localhost:5000/payments", {
+    const res = await fetch("https://staffonic-server.vercel.app/payments", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload),

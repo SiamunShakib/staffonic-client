@@ -52,7 +52,7 @@ export const Router = createBrowserRouter([
         path: '/employees/:email',
         element: <PrivateRoute><EmployeeDetails/></PrivateRoute>,
         loader: ({params}) => 
-          fetch(`http://localhost:5000/employees/${params.email}`)
+          fetch(`https://staffonic-server.vercel.app/employees/${params.email}`)
        },
        {
         path: '/progress',

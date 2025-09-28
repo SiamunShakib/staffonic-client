@@ -24,7 +24,7 @@ const WorkSheet = () => {
 
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:5000/workRecords?email=${user.email}`)
+      fetch(`https://staffonic-server.vercel.app/workRecords?email=${user.email}`)
         .then((res) => res.json())
         .then((data) => setWorks(data));
     }
@@ -52,7 +52,7 @@ const WorkSheet = () => {
       email: user.email,
     };
 
-    fetch("http://localhost:5000/workRecords", {
+    fetch("https://staffonic-server.vercel.app/workRecords", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(newWork),
@@ -78,7 +78,7 @@ const WorkSheet = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/workRecords/${id}`, { method: "DELETE" })
+        fetch(`https://staffonic-server.vercel.app/workRecords/${id}`, { method: "DELETE" })
           .then((res) => res.json())
           .then((data) => {
             if (data.deletedCount > 0) {
@@ -94,7 +94,7 @@ const WorkSheet = () => {
     e.preventDefault();
     if (!editingWork) return;
 
-    fetch(`http://localhost:5000/workRecords/${editingWork._id}`, {
+    fetch(`https://staffonic-server.vercel.app/workRecords/${editingWork._id}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(editingWork),

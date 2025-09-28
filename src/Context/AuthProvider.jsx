@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
     // Fetch userData from backend
     const fetchUserData = async (currentUser) => {
         try {
-            const res = await fetch(`http://localhost:5000/users?email=${currentUser.email}`);
+            const res = await fetch(`https://staffonic-server.vercel.app/users?email=${currentUser.email}`);
             const data = await res.json();
             if (data.length > 0) setUserData(data[0]);
         } catch (err) {
