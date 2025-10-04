@@ -1,12 +1,47 @@
-# React + Vite
+# 👔 Staffonic - Role-Based Employee Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🔗 **Live Site URL:** [https://staffonic-a3ebb.web.app/](https://staffonic-a3ebb.web.app/)
 
-Currently, two official plugins are available:
+🏷️ **Category:** Employee Management / HR & Payroll System
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🧩 Project Overview
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Staffonic** is a full-stack, role-based employee management platform that streamlines HR operations, employee tracking, and payroll management.  
+It provides separate dashboards for **Employees**, **HR Executives**, and **Admins**, enabling seamless workflow, secure authentication, and real-time data updates — all within a modern and intuitive web interface.
+
+---
+## Features
+
+🔐 Authentication: Firebase login & JWT-secured backend routes
+
+🧾 Role-Based Dashboard: Separate panels for Employee, HR, and Admin
+
+🧑‍💼 Employee Management: Add, update, and manage employee data
+
+💰 Payment History: Track and view salary payment records
+
+📊 Responsive Design: Fully optimized for mobile and desktop
+
+⚙️ Secure CRUD Operations: Protected APIs using Express.js and MongoDB
+
+
+## 🛠️ Tech Stack
+
+| Layer | Technologies |
+|-------|---------------|
+| **Frontend** | React, Tailwind CSS, ShadCN / Flowbite / Material Tailwind |
+| **Backend** | Node.js, Express.js, MongoDB |
+| **Authentication** | Firebase Auth (Email/Password + Social Login) |
+| **Security** | JWT Middleware (Role-based API Access) |
+| **Charts & Tables** | Recharts, TanStack Table |
+| **Image Hosting** | imgbb API |
+| **Deployment** | Firebase Hosting (Client), Vercel / Render (Server) |
+
+---
+
+## 👨‍💻 Author
+
+Siamun Shakib — Student & Web Developer
+📍 Feni, Chattogram, Bangladesh
